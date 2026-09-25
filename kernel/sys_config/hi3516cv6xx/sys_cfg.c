@@ -409,8 +409,19 @@ static int prase_sensor_mode(char *s, unsigned int str_len)
 
 static void sys_config_parse_mod_param(void)
 {
+    /*
+     * The parse runs strsep over the string, which writes a NUL at every
+     * separator. Run on the parameter itself, it left the sysfs copy reading
+     * back "sns0", and that copy is the one place userspace can learn which
+     * sensor the module was configured for. Parse a copy instead.
+     */
+    static char list[SENSOR_LIST_CMDLINE_LEN];
+
     sys_config_parse_board();
-    prase_sensor_mode(g_sensor_list, SENSOR_LIST_CMDLINE_LEN);
+    if (strncpy_s(list, sizeof(list), g_sensor_list, sizeof(list) - 1) != EOK) {
+        return;
+    }
+    prase_sensor_mode(list, sizeof(list));
 }
 
 static void sensor_cfg(void)
