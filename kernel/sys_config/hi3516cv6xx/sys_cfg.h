@@ -39,6 +39,7 @@ void *sys_config_get_reg_iocfg2(void);
 void *sys_config_get_reg_iocfg3(void);
 void *sys_config_get_reg_gpio(void);
 bool sys_config_get_ir_auto(void);
+bool sys_config_get_i2c2(void);
 int sys_config_get_vi_intf_type(void);
 int sys_config_get_board_type(void);
 

@@ -207,6 +207,15 @@ static void i2c2_pin_mux(void)
 #ifndef OT_FPGA
     void *iocfg_base = sys_config_get_reg_iocfg3();
 
+    if (!sys_config_get_i2c2()) {
+        /*
+         * Function 5 is GPIO on these two pads, measured on a board: the
+         * pad lists in the demo-board guide are not in mux order.
+         */
+        sys_writel(iocfg_base, 0x0050, 0x1135); /* GPIO7_5 */
+        sys_writel(iocfg_base, 0x0054, 0x1135); /* GPIO7_4 */
+        return;
+    }
     sys_writel(iocfg_base, 0x0050, 0x1133); /* I2C2_SDA */
     sys_writel(iocfg_base, 0x0054, 0x1133); /* I2C2_SCL */
 #endif

@@ -85,16 +85,24 @@ static char g_vi_sensor_name[SENSOR_NUM][SENSOR_NAME_LEN] = {SENSOR_NAME_SC4336P
 static int g_board = BOARD_DMEB_QFN;
 static char g_board_name[BOARD_NAME_LEN] = BOARD_NAME_DMEB_QFN;        /* sck dmeb_qfn dmeb_bga */
 static bool g_ir_auto_en = 0;
+/*
+ * The two pads I2C2 would take (JTAG_TMS/JTAG_TDO) are GPIO7_5 and GPIO7_4 on
+ * boards with no I2C2 device; the P23H drives its IR-cut from them.
+ */
+static bool g_i2c2_en = 1;
 
 #ifndef MODULE
 osal_setup_str_param(sensors, g_sensor_list);
 osal_setup_str_param(board, g_board_name);
 osal_setup_num_param(ir_auto, g_ir_auto_en);
+osal_setup_num_param(i2c2, g_i2c2_en);
 #else
 module_param_string(sensors, g_sensor_list, SENSOR_LIST_CMDLINE_LEN, 0600);
 MODULE_PARM_DESC(sensors, "sns0=sc4336p,sns1=sc4336p");
 module_param_string(board, g_board_name, BOARD_NAME_LEN, 0600);
 module_param_named(ir_auto, g_ir_auto_en, bool, 0600);
+module_param_named(i2c2, g_i2c2_en, bool, 0600);
+MODULE_PARM_DESC(i2c2, "1 (default): pads 0x50/0x54 are I2C2; 0: they are GPIO7_5/GPIO7_4");
 #endif
 
 
@@ -133,6 +141,11 @@ int sys_config_get_board_type(void)
 bool sys_config_get_ir_auto(void)
 {
     return g_ir_auto_en;
+}
+
+bool sys_config_get_i2c2(void)
+{
+    return g_i2c2_en;
 }
 
 #define sys_config_ioremap_return(reg_name, addr, reg_len) \
