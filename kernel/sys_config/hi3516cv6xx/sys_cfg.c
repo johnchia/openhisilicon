@@ -86,10 +86,13 @@ static int g_board = BOARD_DMEB_QFN;
 static char g_board_name[BOARD_NAME_LEN] = BOARD_NAME_DMEB_QFN;        /* sck dmeb_qfn dmeb_bga */
 static bool g_ir_auto_en = 0;
 /*
- * The two pads I2C2 would take (JTAG_TMS/JTAG_TDO) are GPIO7_5 and GPIO7_4 on
- * boards with no I2C2 device; the P23H drives its IR-cut from them.
+ * The two pads I2C2 would take (JTAG_TMS/JTAG_TDO) are GPIO7_5 and GPIO7_4
+ * unless a board asks for the bus. Sensors sit on I2C0 and I2C1, and
+ * nothing in this driver set talks to I2C2, while boards do wire those
+ * pads as GPIO: the P23H drives its IR-cut from them. A board with a
+ * device on I2C2 passes i2c2=1.
  */
-static bool g_i2c2_en = 1;
+static bool g_i2c2_en = 0;
 
 #ifndef MODULE
 osal_setup_str_param(sensors, g_sensor_list);
@@ -102,7 +105,7 @@ MODULE_PARM_DESC(sensors, "sns0=sc4336p,sns1=sc4336p");
 module_param_string(board, g_board_name, BOARD_NAME_LEN, 0600);
 module_param_named(ir_auto, g_ir_auto_en, bool, 0600);
 module_param_named(i2c2, g_i2c2_en, bool, 0600);
-MODULE_PARM_DESC(i2c2, "1 (default): pads 0x50/0x54 are I2C2; 0: they are GPIO7_5/GPIO7_4");
+MODULE_PARM_DESC(i2c2, "0 (default): pads 0x50/0x54 are GPIO7_5/GPIO7_4; 1: they are I2C2");
 #endif
 
 
