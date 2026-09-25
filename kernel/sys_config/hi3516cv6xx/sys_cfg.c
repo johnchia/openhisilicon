@@ -26,6 +26,7 @@
 #define SENSOR_NAME_SC500AI "sc500ai"
 #define SENSOR_NAME_SC431HAI "sc431hai"
 #define SENSOR_NAME_OS04D10 "os04d10"
+#define SENSOR_NAME_CV2005 "cv2005"
 #define MIPI_AD "mipi_ad"
 
 static void *g_reg_crg_base = NULL;
@@ -288,7 +289,8 @@ static unsigned int parse_sensor_clock(const char *name, unsigned int name_len)
         (strncmp(SENSOR_NAME_SC450AI, name, len) == 0) ||
         (strncmp(SENSOR_NAME_SC500AI, name, len) == 0)) {
         clock = 0xA001;   /* 27M */
-    } else if ((strncmp(SENSOR_NAME_OS04D10, name, len) == 0)) {
+    } else if ((strncmp(SENSOR_NAME_OS04D10, name, len) == 0) ||
+               (strncmp(SENSOR_NAME_CV2005, name, len) == 0)) {
         clock = 0x4001;  /* 24M */
     } else if (strncmp(MIPI_AD, name, len) == 0) {
         clock = 0x8010; /* 37.125M */
